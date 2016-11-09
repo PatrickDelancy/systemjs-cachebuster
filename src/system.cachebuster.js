@@ -11,6 +11,7 @@
     
     function config(options) {
         enableLogs = (options.enableLogs===undefined ? false : !!options.enableLogs);
+        jsonFileName = (options.jsonFileName === undefined ? "system.cachebuster.json" : options.jsonFileName);
         baseUrl = (options.baseUrl === undefined ? baseUrl : options.baseUrl);
         
         normalizeBaseUrl();
@@ -54,7 +55,10 @@
         }
 
         return loadHashTablePromise = new Promise(function(resolve, reject) {
-            var url = "/" + jsonFileName + "?v=" + new Date().valueOf();
+            var isAbs = jsonFileName.indexOf('://') != -1;
+            var baseJsonFileName = isAbs ? jsonFileName : '/' + jsonFileName;
+            var url = baseJsonFileName + "?v=" + new Date().valueOf();
+
             log("Loading hash table from: " + url);
             var oReq = new XMLHttpRequest();
             oReq.open("GET", url);
