@@ -8,6 +8,8 @@ function SystemJSCacheBuster (options) {
     options = options || {};
 
     var outputFileName = options.output || "system.cachebuster.json";
+    this.enableLogs = options.enableLogs || true;
+    this.verbose = options.verbose || false;
     this.outputFilePath = path.join(process.cwd(), outputFileName);
     this.baseDir = options.baseDir || process.cwd();
     this.hashes = {};
@@ -42,12 +44,16 @@ SystemJSCacheBuster.prototype._processFile = function (file) {
             hash: hash,
         };
 
-        console.log("Updating hash: " + relFilePath + " --> " + hash);
+        if (this.enableLogs && this.verbose) {
+            console.log("Updating hash: " + relFilePath + " --> " + hash);
+        }
     }
 }
 
 SystemJSCacheBuster.prototype._flushIndex = function() {
-    console.log("Writing summary file: " + this.outputFilePath);
+    if (this.enableLogs) {
+        console.log("Writing to summary file: " + this.outputFilePath);
+    }
     
     fs.writeFileSync(this.outputFilePath, JSON.stringify(this.hashes));
 }
