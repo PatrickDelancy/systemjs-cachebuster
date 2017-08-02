@@ -84,7 +84,9 @@
                 return systemLocate.call(me, load).then(function (address) {
                     var url = address;
 
-                    var relUrl = (startsWith(url, baseUrl) ? relUrl = url.substring(baseUrl.length) : url);
+                    var fullBase = url.substring(0, url.indexOf(baseUrl)) + baseUrl;
+                    var relUrl = (startsWith(url, fullBase) ? relUrl = url.replace(fullBase, "") : url);
+                    
                     var entry = hashTable[relUrl];
 
                     if (entry) {
