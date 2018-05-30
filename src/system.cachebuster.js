@@ -2,7 +2,7 @@
     var systemLocate = System.locate;
     var hashTable = null;
     var loadHashTablePromise = null;
-    var baseUrl = "";
+    var baseUrl = "/";
     var jsonFileName = "system.cachebuster.json";
     var enableLogs = false;
     
@@ -34,10 +34,16 @@
             baseUrl = baseTag[0].href;
         }
         else {
-            baseUrl = location.origin;
-            if(baseUrl[baseUrl.length-1]!="/") {
-                baseUrl += "/";
+            baseTag = document.getElementsByTagName("body");
+            if (baseTag.length && baseTag[0].getAttribute("data-scriptbase")) {
+                baseUrl = baseTag[0].getAttribute("data-scriptbase");
+            } else {
+                baseUrl = location.origin;
             }
+        }
+
+        if(baseUrl[baseUrl.length-1]!="/") {
+            baseUrl += "/";
         }
     }
 
@@ -47,7 +53,7 @@
         }
 
         return loadHashTablePromise = new Promise(function(resolve, reject) {
-            var url = "/" + jsonFileName + "?v=" + new Date().valueOf();
+            var url = baseUrl + jsonFileName + "?v=" + new Date().valueOf();
             log("Loading hash table from: " + url);
             var oReq = new XMLHttpRequest();
             oReq.open("GET", url);

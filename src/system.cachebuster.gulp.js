@@ -8,7 +8,7 @@ function SystemJSCacheBuster (options) {
     options = options || {};
 
     var outputFileName = options.output || "system.cachebuster.json";
-    this.enableLogs = options.enableLogs || true;
+    this.enableLogs = options.enableLogs == null ? true : options.enableLogs;
     this.verbose = options.verbose || false;
     this.outputFilePath = path.join(process.cwd(), outputFileName);
     this.baseDir = options.baseDir || process.cwd();
