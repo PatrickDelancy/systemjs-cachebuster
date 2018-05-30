@@ -8,8 +8,8 @@ function SystemJSCacheBuster (options) {
     options = options || {};
 
     var outputFileName = options.output || "system.cachebuster.json";
-    this.enableLogs = options.enableLogs == null ? true : options.enableLogs;
-    this.verbose = options.verbose || false;
+    this.enableLogs = options.enableLogs == null ? true : !!options.enableLogs;
+    this.verbose = options.verbose == null ? false : !!options.verbose;
     this.outputFilePath = path.join(process.cwd(), outputFileName);
     this.baseDir = options.baseDir || process.cwd();
     this.hashes = {};
@@ -55,7 +55,16 @@ SystemJSCacheBuster.prototype._flushIndex = function() {
         console.log("Writing to summary file: " + this.outputFilePath);
     }
     
-    fs.writeFileSync(this.outputFilePath, JSON.stringify(this.hashes));
+    this.hashes = sortObject(this.hashes);
+
+    fs.writeFileSync(this.outputFilePath, JSON.stringify(this.hashes, undefined, 2).replace(/\n/g, '\r\n'));
+}
+
+function sortObject(obj) {
+    return Object.keys(obj).sort().reduce(function (result, key) {
+        result[key] = obj[key];
+        return result;
+    }, {});
 }
 
 function FileHashTransform (index, flushIndex) {
